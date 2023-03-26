@@ -1,30 +1,39 @@
-import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import openai
-import os
+import telegram
+from telegram.ext import Updater, MessageHandler, Filters
 
-# Установка API-ключа OpenAI GPT
-openai.api_key = "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"
+# Set up OpenAI API key
+openai.api_key = "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"
 
-# Функция для генерации ответа с помощью OpenAI
-def generate_response_from_prompt(prompt):
-    # TODO: вызвать OpenAI GPT и сгенерировать ответ
-    return response
+# Set up Telegram bot token
+telegram_bot_token = "5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q"
 
-# Функция обработки сообщений от пользователей в Telegram
-def handle_message(bot, update):
-    user_input = update.message.text
-    response = generate_response_from_prompt(user_input)
+# Set up Telegram bot updater
+updater = Updater(token=telegram_bot_token, use_context=True)
 
-    # Отправка сгенерированного ответа пользователю в Telegram
-    bot.send_message(chat_id=update.message.chat_id, text=response)
+# Define message handler
+def handle_message(update, context):
+    # Get user input message
+    user_message = update.message.text
 
-# Создание бота и добавление обработчиков сообщений
-bot = telegram.Bot(token="5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q")
-updater = Updater(token="5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q")
-dispatcher = updater.dispatcher
-dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
+    # Call OpenAI API to get response
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=user_message,
+        top_p=1,
+        #temperature=0.9,
+        max_tokens=512
+    )
 
-# Запуск бота
+    # Get response from OpenAI API
+    bot_message = response.choices[0].text.strip()
+
+    # Send response back to user
+    context.bot.send_message(chat_id=update.effective_chat.id, text=bot_message)
+
+# Set up message handler for Telegram bot
+message_handler = MessageHandler(Filters.text & ~Filters.command, handle_message)
+updater.dispatcher.add_handler(message_handler)
+
+# Start Telegram bot
 updater.start_polling()
-
