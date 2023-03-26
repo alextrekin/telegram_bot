@@ -1,12 +1,30 @@
-import telebot
-bot = telebot.TeleBot('5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q')
+import telegram
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import openai
+import os
 
-@bot.message_handler(content_types=['text'])
-def get_text_messages(message):
-    if message.text == "Привет":
-        bot.send_message(message.from_user.id, "Привет, чем я могу тебе помочь?")
-    elif message.text == "/help":
-        bot.send_message(message.from_user.id, "Напиши привет")
-    else:
-        bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /help.")
-    bot.polling(none_stop=True, interval=0)
+# Установка API-ключа OpenAI GPT
+openai.api_key = "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"
+
+# Функция для генерации ответа с помощью OpenAI
+def generate_response_from_prompt(prompt):
+    # TODO: вызвать OpenAI GPT и сгенерировать ответ
+    return response
+
+# Функция обработки сообщений от пользователей в Telegram
+def handle_message(bot, update):
+    user_input = update.message.text
+    response = generate_response_from_prompt(user_input)
+
+    # Отправка сгенерированного ответа пользователю в Telegram
+    bot.send_message(chat_id=update.message.chat_id, text=response)
+
+# Создание бота и добавление обработчиков сообщений
+bot = telegram.Bot(token="5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q")
+updater = Updater(token="5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q")
+dispatcher = updater.dispatcher
+dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
+
+# Запуск бота
+updater.start_polling()
+
