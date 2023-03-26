@@ -3,7 +3,7 @@ import telegram
 from telegram.ext import Updater, MessageHandler, Filters
 
 # Set up OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Set up Telegram bot token
 telegram_bot_token = "5728411264:AAHhfWnZwudIK7cWFKYpJwicDh0JLOAP55Q"
@@ -22,7 +22,7 @@ def handle_message(update, context):
         prompt=user_message,
         top_p=1,
         #temperature=0.9,
-        max_tokens=512
+        max_tokens=128
     )
 
     # Get response from OpenAI API
